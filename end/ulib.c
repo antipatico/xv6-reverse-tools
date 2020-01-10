@@ -122,3 +122,17 @@ strcat(char* dst, char* src)
   // return strcpy(dest+strlen(dest), src);
 
 }
+
+char*
+strncat(char* dst, char* src, int n)
+{
+  char *s = dst;
+
+  dst = dst + strlen(dst);
+  for (int i = 0; i < n; i++) 
+  {
+    *dst++ = *src++;
+  }
+
+  return s;
+}

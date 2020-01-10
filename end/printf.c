@@ -84,8 +84,74 @@ printf(int fd, char *fmt, ...)
   }
 }
 
-void
-sprintf(char* dest, char* fmt, ...)
+// by antipatico
+static void
+sprintint(char* dst, int xx, int base, int sgn)
 {
-  ;
+  static char digits[] = "0123456789ABCDEF";
+  char buf[16];
+  int i, neg;
+  uint x;
+
+  neg = 0;
+  if(sgn && xx < 0){
+    neg = 1;
+    x = -xx;
+  } else {
+    x = xx;
+  }
+
+  i = 0;
+  do{
+    buf[i++] = digits[x % base];
+  }while((x /= base) != 0);
+  if(neg)
+    buf[i++] = '-';
+
+  strncat(dst, buf, i);
+}
+
+void
+sprintf(char* dst, char* fmt, ...)
+{
+  char *s;
+  int c, i, state;
+  uint *ap;
+
+  state = 0;
+  ap = (uint*)(void*)&fmt + 1;
+  for(i = 0; fmt[i]; i++){
+    c = fmt[i] & 0xff;
+    if(state == 0){
+      if(c == '%'){
+        state = '%';
+      } else {
+        strncat(dst, (char*)&c, 1);
+      }
+    } else if(state == '%'){
+      if(c == 'd'){
+        sprintint(dst, *ap, 10, 1);
+        ap++;
+      } else if(c == 'x' || c == 'p'){
+        sprintint(dst, *ap, 16, 0);
+        ap++;
+      } else if(c == 's'){
+        s = (char*)*ap;
+        ap++;
+        if(s == 0)
+          s = "(null)";
+        strcat(dst,s);
+      } else if(c == 'c'){
+        strncat(dst, (char*)ap, 1);
+        ap++;
+      } else if(c == '%'){
+        strncat(dst, (char*)&c, 1);
+      } else {
+        // Unknown % sequence.  Print it to draw attention.
+        strcat(dst, "%");
+        strncat(dst, (char*)&c, 1);
+      }
+      state = 0;
+    }
+  }
 }

@@ -40,3 +40,4 @@ int atoi(const char*);
 // by antipatico
 void sprintf(char*, char*, ...);
 char* strcat(char*, char*);
+char* strncat(char*, char*, int);
