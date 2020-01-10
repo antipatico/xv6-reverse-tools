@@ -23,8 +23,7 @@ antipatico
 
 # References
 
-\[1\] [The 101 of ELF files on Linux: Understanding and
-Analysis](https://linux-audit.com/elf-binaries-on-linux-understanding-and-analysis/)
-- Linux Audit
-\[2\] [Executable and Linkable Format (ELF)](https://stevens.netmeister.org/631/elf.html) - charngda
-\[3\] Executable and Linkable Format (ELF) - Tool Interface Standards (TIS)
+1. [The 101 of ELF files on Linux: Understanding and
+Analysis](https://linux-audit.com/elf-binaries-on-linux-understanding-and-analysis/)- Linux Audit
+2. [Executable and Linkable Format (ELF)](https://stevens.netmeister.org/631/elf.html) - charngda
+3. Executable and Linkable Format (ELF) - Tool Interface Standards (TIS)
