@@ -108,7 +108,8 @@ sprintint(char* dst, int xx, int base, int sgn)
   if(neg)
     buf[i++] = '-';
 
-  strncat(dst, buf, i);
+  while(--i >= 0)
+    strncat(dst, buf+i, 1);
 }
 
 void
@@ -118,6 +119,7 @@ sprintf(char* dst, char* fmt, ...)
   int c, i, state;
   uint *ap;
 
+  dst[0] = '\0';
   state = 0;
   ap = (uint*)(void*)&fmt + 1;
   for(i = 0; fmt[i]; i++){
