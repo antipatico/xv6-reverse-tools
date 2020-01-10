@@ -104,8 +104,21 @@ memmove(void *vdst, void *vsrc, int n)
   return vdst;
 }
 
+// by antipatico
+
 char*
-strcat(char* dest, char* src)
+strcat(char* dst, char* src)
 {
-    return 0;
+  char *s = dst;
+
+  for (dst = dst + strlen(dst); (*dst++ = *src++) != 0;) 
+  {
+    ;
+  }
+
+  return s;
+
+  // alternative implementation
+  // return strcpy(dest+strlen(dest), src);
+
 }
