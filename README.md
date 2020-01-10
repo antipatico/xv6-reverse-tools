@@ -1,12 +1,12 @@
 # xv6 Reverse Tools
-This repositories provides some basic tools for Reverse Engineering for the xv6
+This repository provides some basic tools for Reverse Engineering for the xv6
 operating system, such as an 8086 disassembler, an ELF32 analyzer and an ELF32
 disassembler.
 
 The software is provided as a patch for xv6, as such you must copy this folder
 into your xv6-public folder and recompile the whole project.
 
-Versioning is provided from the original version of modified files of xv6.
+Versioning is provided from the original version of xv6 files.
 
 The version of xv6 is the latest as today: 6.828.
 
