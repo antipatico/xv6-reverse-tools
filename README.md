@@ -3,8 +3,8 @@ This repository provides some basic tools for Reverse Engineering for the xv6
 operating system, such as an 8086 disassembler, an ELF32 analyzer and an ELF32
 disassembler.
 
-The software is provided as a patch for xv6, as such you must copy this folder
-into your xv6-public folder and recompile the whole project.
+The software is provided as a patch for xv6, as such you must copy the `end`
+folder into your xv6-public folder and recompile the whole project.
 
 Versioning is provided from the original version of xv6 files.
 
@@ -16,6 +16,15 @@ released under the Apache-2.0 license.
 
 The ELF32 analyzer is written from scratch thanks to many online resources
 \[1\]\[2\]\[3\].
+
+## Directory structure
+```
+xv6-reverse-tools/
+|-begin
+This directory has the intial code of external sources.
+|-end
+This directory contains the actual patches for xv6.
+```
 
 # Author
 
