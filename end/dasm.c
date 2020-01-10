@@ -1,7 +1,10 @@
-#include <stdio.h>
-#include <string.h>
-
 #include "disassembler.h"
+
+#include "types.h"
+#include "user.h"
+#include "stat.h"
+#include "fcntl.h"
+
 
 int main() {
 	unsigned char bytes[] = { 0x55, 0x31, 0xD2, 0x89, 0xE5, 0x8B, 0x45, 0x08, 0x56, 0x8B, 0x75, 0x0C, 0x53, 0x8D, 0x58, 0xFF, 0x0F, 0xB6, 0x0C, 0x16, 0x88, 0x4C, 0x13, 0x01, 0x83, 0xC2, 0x01, 0x84, 0xC9, 0x75, 0xF1, 0x5B, 0x5E, 0x5D, 0xC3 };
@@ -12,14 +15,14 @@ int main() {
 	for (int i = 0, count = 0; i < sizeof(bytes); i += count) {
 		count = disassemble(bytes + i, sizeof(bytes) - i, i, disassembled);
 
-		printf("%08x: ", i);
+		printf(1,"%08x: ", i);
 
 		instruction[0] = 0;
 		for (int e = 0; e < count; e++) {
 			sprintf(instruction + strlen(instruction), "%02x ", bytes[i + e]);
 		}
 
-		printf("%-20s %s\n", instruction, disassembled);
+		printf(1,"%-20s %s\n", instruction, disassembled);
 	}
 	
 	/*
