@@ -58,6 +58,8 @@ D  8D58FF          lea bx,[bx+si-0x1]
 21  5D              pop bp
 22  C3              ret
 ```
+As explained before, you could also call the command by invoking `cat DISASMME |
+dasm`.
 ## 2. standard library expansion
 Various functions have been added to the standard library, such as `sprintf`,
 `strcat` and `strncat`. Those were needed to port `dasm`. These changes can be

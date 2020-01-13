@@ -1,17 +1,23 @@
 #include "dasm.h"
 
+uint num_bytes = 0 ;
+
 int main(int argc, char **argv)
 {
-	char *buffer; 
-	uint num ; 
+	char *buffer;
+  int n;
+	uint num; 
 	if (argc > 1)
 	{
-		if (strlen(argv[1]) < 255)
-		{
-			buffer = read_file(argv[1], &num) ;
-			disasm((unsigned char*)buffer, num) ;
-		}
-	}
+	  buffer = read_file(argv[1], &num) ;
+	} else {
+    num = 0;
+    buffer = (char*)malloc(sizeof(char)*1337*5);
+    while ((n = read(0, (unsigned char*)buffer+num, 1024)) > 0)
+       num += n; 
+    num_bytes = num;
+  }
+	disasm((unsigned char*)buffer, num) ;
 	exit();
 }
 
@@ -25,7 +31,6 @@ enum segment_registers {ES=0, CS, SS, DS} ;
 signed char segment_override = -1 ;
  
 int bytes = 0 ;
-uint num_bytes = 0 ;
 
 int rm_segment_override = -1 ; 
 
