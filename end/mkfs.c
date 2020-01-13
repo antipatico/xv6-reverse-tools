@@ -260,6 +260,8 @@ iappend(uint inum, void *xp, int n)
   struct dinode din;
   char buf[BSIZE];
   uint indirect[NINDIRECT];
+  uint indirect2[NINDIRECT];
+  uint row, col;
   uint x;
 
   rinode(inum, &din);
@@ -277,12 +279,21 @@ iappend(uint inum, void *xp, int n)
       if(xint(din.addrs[NDIRECT]) == 0){
         din.addrs[NDIRECT] = xint(freeblock++);
       }
+      row = (fbn - NDIRECT)/NINDIRECT;
+      col = (fbn - NDIRECT)%NINDIRECT;
+      // first indirect
       rsect(xint(din.addrs[NDIRECT]), (char*)indirect);
-      if(indirect[fbn - NDIRECT] == 0){
-        indirect[fbn - NDIRECT] = xint(freeblock++);
+      if(indirect[row] == 0){
+        indirect[row] = xint(freeblock++);
         wsect(xint(din.addrs[NDIRECT]), (char*)indirect);
       }
-      x = xint(indirect[fbn-NDIRECT]);
+      // 2nd indirect
+      rsect(xint(indirect[row]), (char*)indirect2);
+      if(indirect2[col] == 0){
+        indirect2[col] = xint(freeblock++);
+        wsect(xint(indirect[row]), (char*)indirect2);
+      }
+      x = xint(indirect2[col]);
     }
     n1 = min(n, (fbn + 1) * BSIZE - off);
     rsect(x, buf);
