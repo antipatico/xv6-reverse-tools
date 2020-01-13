@@ -1,18 +1,18 @@
-#include "dasm.h"
+#include "disasm.h"
 
 int main(int argc, char **argv)
 {
 	char *buffer; 
-	uint num ; 
+	long num ; 
 	if (argc > 1)
 	{
 		if (strlen(argv[1]) < 255)
 		{
 			buffer = read_file(argv[1], &num) ;
-			disasm((unsigned char*)buffer, num) ;
+			disasm(buffer, num) ;
 		}
 	}
-	exit();
+	return 0 ;
 }
 
 
@@ -25,22 +25,22 @@ enum segment_registers {ES=0, CS, SS, DS} ;
 signed char segment_override = -1 ;
  
 int bytes = 0 ;
-uint num_bytes = 0 ;
+int num_bytes = 0 ;
 
 int rm_segment_override = -1 ; 
 
-int parse(char *s, char*(*func)(char*, int*, int *), unsigned char *buffer, int *j)
+int parse(char *s, char*(*func)(char*, int*, int *), char *buffer, int *j)
 {
 	bytes = 1;
 	int temp_j = *j ; 
 	int error = 0 ;
-	char *result = func((char*)buffer, j, &error) ;
+	char *result = func(buffer, j, &error) ;
 	if (error)
 	{
 		char tmp_buffer[20] ; 
 		memset(tmp_buffer, '\0', 20) ;
 		unsigned char tmp_char = buffer[*j] ; 
-		sprintf(tmp_buffer, "db 0x%x\n", tmp_char) ;
+		sprintf(tmp_buffer, "db 0x%X\n", tmp_char) ;
 		parse_noop(tmp_buffer, buffer, j) ;
 		return 0 ;
 	}
@@ -53,10 +53,10 @@ int parse(char *s, char*(*func)(char*, int*, int *), unsigned char *buffer, int 
 		k = k - 2 ;
 		switch (rm_segment_override)
 		{
-			case ES: printf(1, "%x", 0x26) ;	 break ;
-			case CS: printf(1, "%x", 0x2E) ;	 break ;
-			case SS: printf(1, "%x", 0x36) ;	 break ;
-			case DS: printf(1, "%x", 0x3E) ;	 break ;
+			case ES: printf("%02X", 0x26) ;	 break ;
+			case CS: printf("%02X", 0x2E) ;	 break ;
+			case SS: printf("%02X", 0x36) ;	 break ;
+			case DS: printf("%02X", 0x3E) ;	 break ;
 		} 
 		rm_segment_override = -1 ; 
 		segment_override = -1 ;
@@ -79,10 +79,10 @@ int parse(char *s, char*(*func)(char*, int*, int *), unsigned char *buffer, int 
 		k = k - 2 ;
 		switch (segment_override)
 		{
-			case ES: printf(1, "%x", 0x26) ;	 break ;
-			case CS: printf(1, "%x", 0x2E) ;	 break ;
-			case SS: printf(1, "%x", 0x36) ;	 break ;
-			case DS: printf(1, "%x", 0x3E) ;	 break ;
+			case ES: printf("%02X", 0x26) ;	 break ;
+			case CS: printf("%02X", 0x2E) ;	 break ;
+			case SS: printf("%02X", 0x36) ;	 break ;
+			case DS: printf("%02X", 0x3E) ;	 break ;
 		}
 		segment_override = -1 ;
 		rm_segment_override = -1 ; 
@@ -90,10 +90,10 @@ int parse(char *s, char*(*func)(char*, int*, int *), unsigned char *buffer, int 
 	for (i=0; i < bytes; i++)
 	{
 		unsigned char byte = buffer[temp_j+i]  ; 
-		printf(1, "%x", byte) ;	
+		printf("%02X", byte) ;	
 	}
 	k = (k - (bytes*2))  ; 
-	for (i=0; i < k; i++) printf(1, " ") ;
+	for (i=0; i < k; i++) printf(" ") ;
 	if (t == 1)
 	{
 		char tmp_string[255] ; 
@@ -102,10 +102,9 @@ int parse(char *s, char*(*func)(char*, int*, int *), unsigned char *buffer, int 
 		memset(tmp_string2, '\0', 255) ;
 		sprintf(tmp_string, s, result) ; 
 		sprintf(tmp_string2, "%s %s", segment, tmp_string) ; 
-		printf(1, "%s", tmp_string2) ;
+		printf("%s", tmp_string2) ;
 	}
-	else printf(1, s, result) ; 
-  return 0;
+	else printf(s, result) ; 
 }
 
 int get_bytes(int k, int j)
@@ -114,25 +113,25 @@ int get_bytes(int k, int j)
 	else return 1; 
 }
 
-int parse_noop(char *s, unsigned char *buffer, int *j)
+int parse_noop(char *s, char *buffer, int *j)
 {
 	int k = 16 ; 
 	if (segment_override >= 0) 
 	{
 			switch (segment_override)
 			{
-				case ES: printf(1, "%x", 0x26) ;	 break ;
-				case CS: printf(1, "%x", 0x2E) ;	 break ;
-				case SS: printf(1, "%x", 0x36) ;	 break ;
-				case DS: printf(1, "%x", 0x3E) ;	 break ;
+				case ES: printf("%02X", 0x26) ;	 break ;
+				case CS: printf("%02X", 0x2E) ;	 break ;
+				case SS: printf("%02X", 0x36) ;	 break ;
+				case DS: printf("%02X", 0x3E) ;	 break ;
 			}
 			k = k - 2 ; 
 	}
 	unsigned char tmp_char = buffer[*j] ; 
-	printf(1, "%x", tmp_char) ;	
+	printf("%02X", tmp_char) ;	
 	int i= 0 ;
 	k = k - 1*2 ; 
-	for (i=0; i < k; i++) printf(1, " ") ;
+	for (i=0; i < k; i++) printf(" ") ;
 	if (segment_override >= 0)
 	{
 		char segment[20] ;
@@ -144,25 +143,26 @@ int parse_noop(char *s, unsigned char *buffer, int *j)
 			case SS: sprintf(segment, "ss") ; break ;
 			case DS: sprintf(segment, "ds") ; break ;
 		}
-		printf(1, "%s %s", segment, s ) ; 
+		printf("%s %s", segment, s ) ; 
 		segment_override = -1 ;
 		rm_segment_override = -1 ; 
 	}
 	else
 	{
-		printf(1, "%s", s) ; 
+		printf("%s", s) ; 
 	}
-  return 0;
 }
 
-void disasm(unsigned char *buffer, uint num)
+void disasm(unsigned char *buffer, long num)
 {
 	int j = 0; 
+	int z = 0 ;
 	while (j < num)
 	{
 		unsigned int addr = j ;
 		if (segment_override == -1)
-			printf(1, "%x  ", addr) ;
+			printf("%08X  ", addr) ;
+		z = buffer[j] ;
 		switch (buffer[j])
 		{
 			case 0x00: parse("add %s\n", rm8_r8, buffer,&j) ; break ;
@@ -529,9 +529,9 @@ void disasm(unsigned char *buffer, uint num)
 			case 0xED: parse_noop("in ax,dx\n", buffer, &j) ; break ;
 			case 0xEE: parse_noop("out dx,al\n", buffer, &j) ; break ;
 			case 0xEF: parse_noop("out dx,ax\n", buffer, &j) ; break ;
-			case 0xF0: printf(1, "lock ") ; break ;
-			case 0xF2: printf(1, "repne ") ; break ;
-			case 0xF3: printf(1, "rep ") ; break ;
+			case 0xF0: printf("lock ") ; break ;
+			case 0xF2: printf("repne ") ; break ;
+			case 0xF3: printf("rep ") ; break ;
 			case 0xF4: parse_noop("hlt\n", buffer, &j) ; break ;
 			case 0xF5: parse_noop("cmc\n", buffer, &j) ; break ;
 			case 0xF6:
@@ -612,7 +612,7 @@ void disasm(unsigned char *buffer, uint num)
 			{
 				char tmp_buffer[20] ; 
 				memset(tmp_buffer, '\0', 20) ;
-				sprintf(tmp_buffer, "db 0x%x\n", buffer[j]) ;
+				sprintf(tmp_buffer, "db 0x%X\n", buffer[j]) ;
 				parse_noop(tmp_buffer, buffer, &j) ;
 				break ;
 			}
@@ -1112,33 +1112,34 @@ char *rm(char *buffer, int *j, char type, int *error)
 	return rm_str ; 
 }
 
-char* read_file(char *name, uint *num)
+char* read_file(char *name, long *num)
 {
-	int fd ;
+	FILE *fp ;
 	char *buffer;
-  struct stat st;
-  
-
-	fd = open(name, O_RDONLY) ;
-  if(fd < 0) {
-    printf(2, "Open file error!\n");
-    exit();
-  }
-  fstat(fd, &st);
-	*num = st.size;
-	buffer = (char*) malloc(sizeof(char) * (*num)) ;
-	if (buffer == NULL)
+	fp = fopen(name, "rb") ;
+	if (fp != NULL)
 	{
-		printf(2, "Memory error!\n") ;
-		exit() ;
+		fseek(fp, 0, SEEK_END) ;
+		*num = ftell(fp) ;
+		rewind(fp) ;
+		buffer = (char*) malloc(sizeof(char) * (*num)) ;
+		if (buffer == NULL)
+		{
+			printf("Memory error!\n") ;
+			exit(1) ;
+		}
+		long result = fread(buffer, 1, *num, fp) ;
+		if (result != *num)
+		{
+			printf("File read error!\n") ;
+			exit(1) ;
+		}
+		num_bytes  = *num ;
+		return buffer; 
 	}
-	long result = read(fd, buffer, *num) ;
-	if (result != *num)
+	else
 	{
-		printf(2, "File read error!\n") ;
-		exit() ;
+		printf("Error opening file!\n") ;
+		exit(1) ;
 	}
-  close(fd);
-	num_bytes  = *num ;
-	return buffer; 
 }

@@ -10,11 +10,13 @@ Versioning is provided from the original version of xv6 files.
 
 The version of xv6 is the latest as today: 6.828.
 
-The disassembler is based on [btbd's
-disassembler](https://github.com/btbd/disassembler) and as such this project is
-released under the Apache-2.0 license.
+The first idea was to port [btbd's
+disassembler](https://github.com/btbd/disassembler).
+Turns out it really didn't work that well under xv6, moreover it used GOTOs and
+labels, thus I decided to abandon that idea and to port [kesrut's
+disassembler](https://github.com/kesrut/disasm8086)
 
-The ELF32 analyzer is written from scratch thanks to many online resources
+The ELF32 analyzer  is written from scratch thanks to many online resources
 \[1\]\[2\]\[3\].
 
 ## Directory structure
@@ -28,17 +30,18 @@ This directory contains the actual patches for xv6.
 
 # Patches
 ## 1. dasm
-The `dasm` utility has been ported to xv6. It reads **binary** input from stdin
-and outputs it's 8086 disassembly in stdout. Various changes to the binary (and
-the compile options) had to be made to make this suitable.
-It is possible to make it disassemble a file. Run with `-h` to print an help
-message.
+The `dasm` utility has been ported to xv6. If launched without parameters it
+reads stdin as **binary data** and dissassembles it. If launched with a file
+path as a parameters it opens the file, reads it and disassembles it. IT DOES
+NOT search for the code, it just "stupidly" disassembles
+Various changes to the source had to be made to make this possible.
 ## 2. standard library expansion
 Various functions have been added to the standard library, such as `sprintf`,
 `strcat` and `strncat`. Those were needed to port `dasm`. These changes can be
 found in `printf.c`, `user.h` and `ulib.c`.
 ## 3. filesystem double indirection
-Since the `dasm` binary couldn't fit the maximum file size, which is 140 blocks.
+The inital `dasm` binary (the one from btbd's disassembler)
+couldn't fit the maximum file size, which is 140 blocks.
 By default each block is made out of 512 bytes, and each file can have 12 direct
 blocks and 128 indirect blocks, for a total of 140 blocks \[4\].
 I edited the filesystem (`fs.c`, `fs.h`) to use double indirection instead of
