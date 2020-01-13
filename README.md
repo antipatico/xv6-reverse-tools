@@ -32,9 +32,32 @@ This directory contains the actual patches for xv6.
 ## 1. dasm
 The `dasm` utility has been ported to xv6. If launched without parameters it
 reads stdin as **binary data** and dissassembles it. If launched with a file
-path as a parameters it opens the file, reads it and disassembles it. IT DOES
-NOT search for the code, it just "stupidly" disassembles
-Various changes to the source had to be made to make this possible.
+path as a parameters it opens the file, reads it and disassembles it.
+
+IT DOES NOT search for the code, it just "stupidly" disassembles.
+
+You can test this program by running `dasm DISASMME`, the output should be this:
+```
+0  55              push bp
+1  31D2            xor dx,dx
+3  89E5            mov bp,sp
+5  8B458          mov ax,[di+0x8]
+8  56              push si
+9  8B75C          mov si,[di+0xC]
+C  53              push bx
+D  8D58FF          lea bx,[bx+si-0x1]
+10  F              db 0xF
+11  B6C            mov dh,0xC
+13  16              push ss
+14  884C13          mov [si+0x13],cl
+17  183C21        add [bp+di+0x1C2],ax
+1B  84C9            test cl,cl
+1D  75F1            jnz 0x10
+1F  5B              pop bx
+20  5E              pop si
+21  5D              pop bp
+22  C3              ret
+```
 ## 2. standard library expansion
 Various functions have been added to the standard library, such as `sprintf`,
 `strcat` and `strncat`. Those were needed to port `dasm`. These changes can be
