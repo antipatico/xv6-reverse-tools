@@ -63,8 +63,8 @@ As explained before, you could also call the command by invoking `cat DISASMME |
 dasm`.
 ## 2. standard library expansion
 Various functions have been added to the standard library, such as `sprintf`,
-`strcat` and `strncat`. Those were needed to port `dasm`. These changes can be
-found in `printf.c`, `user.h` and `ulib.c`.
+`strcat`, `strncat` and `memcpy`. Those were needed to port `dasm`. These
+changes can be found in `printf.c`, `user.h` and `ulib.c`.
 ## 3. filesystem double indirection
 The inital `dasm` binary (the one from btbd's disassembler)
 couldn't fit the maximum file size, which is 140 blocks.
