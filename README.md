@@ -8,7 +8,7 @@ folder into your xv6-public folder and recompile the whole project.
 
 Versioning is provided from the original version of xv6 files.
 
-The version of xv6 is the latest as today: 6.828.
+You can find the intial source code of xv6 under `begin/xv6-public`.
 
 The first idea was to port [btbd's
 disassembler](https://github.com/btbd/disassembler).
