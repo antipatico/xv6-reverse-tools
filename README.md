@@ -8,7 +8,8 @@ folder into your xv6-public folder and recompile the whole project.
 
 Versioning is provided from the original version of xv6 files.
 
-You can find the intial source code of xv6 under `begin/xv6-public`.
+You can find the intial source code of xv6 under
+[begin/xv6-public](begin/xv6-public).
 
 The first idea was to port [btbd's
 disassembler](https://github.com/btbd/disassembler).
@@ -78,6 +79,18 @@ The `big` utility is present to check the correctness of this functionality.
 To support the "embedding" of largefiles in the initial filesystem (`fs.img`) I
 had to further edit `mkfs.c` to support double indirection and `param.h` to have
 a larger filesystem.
+## 4. sectdump tool
+To enable disassemblying of real binary executable files, I've implemented a
+little program, which is able to parse ELF files and to dump sections based on
+name.
+```
+USAGE: sectdump BINARY_NAME [SECTION_NAME]
+```
+If no section name is provided, `.text` will be used as default.
+
+An example of usage, is either to dump the string table (E.G. `sectdump cat
+.strtab`) or in pipeline with `dasm` (E.G.`sectdump sectdump | dasm`).
+
 
 # Known bugs
 Only the `bmap` function has been implemented, and as a consequence of this,
@@ -87,6 +100,10 @@ deletion of "large files" (files exceeding the direct block size, which is
 # Author
 
 antipatico
+
+# License
+
+Read the file [LICENSE](LICENSE) in this directory.
 
 # References
 
