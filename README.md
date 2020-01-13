@@ -35,7 +35,8 @@ It is possible to make it disassemble a file. Run with `-h` to print an help
 message.
 ## 2. standard library expansion
 Various functions have been added to the standard library, such as `sprintf`,
-`strcat` and `strncat`. Those were needed to port `dasm`.
+`strcat` and `strncat`. Those were needed to port `dasm`. These changes can be
+found in `printf.c`, `user.h` and `ulib.c`.
 ## 3. filesystem double indirection
 Since the `dasm` binary couldn't fit the maximum file size, which is 140 blocks.
 By default each block is made out of 512 bytes, and each file can have 12 direct
@@ -43,10 +44,12 @@ blocks and 128 indirect blocks, for a total of 140 blocks \[4\].
 I edited the filesystem (`fs.c`, `fs.h`) to use double indirection instead of
 direct one, now the filesystems max file size is _12 + (128\*128)_ = **16396**
 blocks.
+
 The `big` utility is present to check the correctness of this functionality.
 
 To support the "embedding" of largefiles in the initial filesystem (`fs.img`) I
-had to further edit `mkfs.c` to support double indirection.
+had to further edit `mkfs.c` to support double indirection and `param.h` to have
+a larger filesystem.
 
 # Known bugs
 Only the `bmap` function has been implemented, and as a consequence of this,
