@@ -1,4 +1,4 @@
-//#include "disassembler.h"
+#include "disassembler.c"
 
 #include "types.h"
 #include "user.h"
@@ -16,14 +16,14 @@ int main() {
 	for (int i = 0, count = 0; i < sizeof(bytes); i += count) {
 		count = disassemble(bytes + i, sizeof(bytes) - i, i, disassembled);
 
-		printf(1,"%08x: ", i);
+		printf(1,"%x: ", i);
 
 		instruction[0] = 0;
 		for (int e = 0; e < count; e++) {
-			sprintf(instruction + strlen(instruction), "%02x ", bytes[i + e]);
+			sprintf(instruction + strlen(instruction), "%x ", bytes[i + e]);
 		}
 
-		printf(1,"%-20s %s\n", instruction, disassembled);
+		printf(1,"%s %s\n", instruction, disassembled);
 	}
 	
 	/*

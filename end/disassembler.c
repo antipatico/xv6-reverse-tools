@@ -1,3 +1,5 @@
+#include "types.h"
+#include "user.h"
 #include "disassembler.h"
 
 unsigned int disassemble(unsigned char *bytes, unsigned int max, int offset, char *output) {
@@ -552,6 +554,8 @@ unsigned int disassemble(unsigned char *bytes, unsigned int max, int offset, cha
 		opcode = *bytes++;
 	}
 
+	char modRM_mod = ((*bytes) >> 6) & 0b11; // Bits 7-6.
+
 	if (!instructions[opcode].hasModRM) {
 		goto OUTPUT; // Skip ModRM byte parsing
 	}
@@ -559,31 +563,30 @@ unsigned int disassemble(unsigned char *bytes, unsigned int max, int offset, cha
 	char RM_output[0xFF];
 	char R_output[0xFF];
 
-	char modRM_mod = ((*bytes) >> 6) & 0b11; // Bits 7-6.
 	char modRM_reg = ((*bytes) >> 3) & 0b111; // Bits 5-3.
 	char modRM_rm = (*bytes++) & 0b111; // Bits 2-0.
 
 	switch (instructions[opcode].size) {
 		case WORD:
-			strcpy(R_output, register_mnemonics16[modRM_reg]);
+			strcpy(R_output, register_mnemonics16[(int)modRM_reg]);
 			break;
 		case BYTE:
-			strcpy(R_output, register_mnemonics8[modRM_reg]);
+			strcpy(R_output, register_mnemonics8[(int)modRM_reg]);
 			break;
 		default:
-			strcpy(R_output, register_mnemonics32[modRM_reg]);
+			strcpy(R_output, register_mnemonics32[(int)modRM_reg]);
 	}
 
 	if (modRM_mod == 0b11) { // Register addressing mode.
 		switch (instructions[opcode].size) {
 			case BYTE:
-				sprintf(RM_output, "%s", register_mnemonics8[modRM_rm]);
+				sprintf(RM_output, "%s", register_mnemonics8[(int)modRM_rm]);
 				break;
 			case WORD:
-				sprintf(RM_output, "%s", register_mnemonics16[modRM_rm]);
+				sprintf(RM_output, "%s", register_mnemonics16[(int)modRM_rm]);
 				break;
 			default:
-				sprintf(RM_output, "%s", register_mnemonics32[modRM_rm]);
+				sprintf(RM_output, "%s", register_mnemonics32[(int)modRM_rm]);
 		}
 	} else if (modRM_mod == 0b00 && modRM_rm == 0b101) { // Displacement only addressing mode.
 		sprintf(RM_output, "[0x%x]", *(int *)bytes);
@@ -598,16 +601,16 @@ unsigned int disassemble(unsigned char *bytes, unsigned int max, int offset, cha
 				sprintf(RM_output, "[0x%x", *(int *)bytes);
 				bytes += 4;
 			} else {
-				strcpy(RM_output, sib_base_mnemonics[SIB_base]);
+				strcpy(RM_output, sib_base_mnemonics[(int)SIB_base]);
 			}
 
 			if (SIB_index != 0b100) {
 				strcat(RM_output, "+");
-				strcat(RM_output, register_mnemonics32[SIB_index]);
-				strcat(RM_output, sib_scale_mnemonics[SIB_scale]);
+				strcat(RM_output, register_mnemonics32[(int)SIB_index]);
+				strcat(RM_output, sib_scale_mnemonics[(int)SIB_scale]);
 			}
 		} else {
-			sprintf(RM_output, "[%s", register_mnemonics32[modRM_rm]);
+			sprintf(RM_output, "[%s", register_mnemonics32[(int)modRM_rm]);
 		}
 
 		if (modRM_mod == 0b01) { // One-byte signed displacement follows addressing mode byte(s).
@@ -678,7 +681,8 @@ OUTPUT:
 				bytes += 4;
 				break;
 			case REL8:
-				sprintf(output + strlen(output), "0x%x", offset + ((bytes - base) + 1) + *(char *)bytes++);
+        bytes += 1;
+				sprintf(output + strlen(output), "0x%x", offset + ((bytes - base) + 1) + *(char *)bytes);
 				break;
 			case REL32:
 				sprintf(output + strlen(output), "0x%x", offset + ((bytes - base) + 4) + *(int *)bytes);
