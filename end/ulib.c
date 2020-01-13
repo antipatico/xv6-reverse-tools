@@ -107,7 +107,7 @@ memmove(void *vdst, void *vsrc, int n)
 // by antipatico
 
 char*
-strcat(char* dst, char* src)
+strcat(char *dst, char *src)
 {
   char *s = dst;
 
@@ -124,7 +124,7 @@ strcat(char* dst, char* src)
 }
 
 char*
-strncat(char* dst, char* src, int n)
+strncat(char *dst, char *src, int n)
 {
   char *s = dst;
 
@@ -135,4 +135,19 @@ strncat(char* dst, char* src, int n)
   }
 
   return s;
+}
+
+void*
+memcpy(void *dest, void *src, int n)
+{
+  char *d, *s;
+  
+  d = (char*)dest; s = (char*)src;
+
+  for (int i = 0; i < n; i++)
+  {
+    *d++ = *s++;
+  }
+
+  return dest;
 }

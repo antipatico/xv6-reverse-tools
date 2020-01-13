@@ -1,6 +1,5 @@
 struct stat;
-struct rtcdate;
-
+struct rtcdate; 
 // system calls
 int fork(void);
 int exit(void) __attribute__((noreturn));
@@ -41,3 +40,4 @@ int atoi(const char*);
 void sprintf(char*, char*, ...);
 char* strcat(char*, char*);
 char* strncat(char*, char*, int);
+void* memcpy(void*, void*, int);

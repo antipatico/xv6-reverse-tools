@@ -162,6 +162,7 @@ mkfs: mkfs.c fs.h
 UPROGS=\
 	_big\
 	_dasm\
+	_sectdump\
 	_cat\
 	_echo\
 	_forktest\
