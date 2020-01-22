@@ -10,7 +10,7 @@
 #include "elf.h"
 
 #define NULL 0
-#define ELF_SIZE (sizeof(struct secthdr))
+#define ELF_SIZE (sizeof(struct elfhdr))
 
 struct secthdr {
   uint name;
