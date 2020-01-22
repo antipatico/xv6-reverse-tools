@@ -78,9 +78,9 @@ char* extract_section(char* exe, uint size, char* sname, uint* n) {
   for(int i = 0; i < elf->shnum; i++) {
     sect = (struct secthdr*)(exe+elf->shoff+(elf->shentsize*i));
     if(strcmp(sname,strtable+sect->name) == 0) {
-        buf = (char*)malloc(sizeof(char)*sect->size);
-        memcpy(buf, exe+sect->offset, sect->size);
-        *n = sect->size;
+      buf = (char*)malloc(sizeof(char)*sect->size);
+      memcpy(buf, exe+sect->offset, sect->size);
+      *n = sect->size;
     }
   }
   return buf;
@@ -88,30 +88,30 @@ char* extract_section(char* exe, uint size, char* sname, uint* n) {
 
 char* read_file(char *name, uint *num)
 {
-	int fd ;
-	char *buffer;
+  int fd ;
+  char *buffer;
   struct stat st;
-  
 
-	fd = open(name, O_RDONLY) ;
+
+  fd = open(name, O_RDONLY) ;
   if(fd < 0) {
     printf(2, "Open file error!\n");
     exit();
   }
   fstat(fd, &st);
-	*num = st.size;
-	buffer = (char*) malloc(sizeof(char) * (*num)) ;
-	if (buffer == NULL)
-	{
-		printf(2, "Memory error!\n") ;
-		exit() ;
-	}
-	long result = read(fd, buffer, *num) ;
-	if (result != *num)
-	{
-		printf(2, "File read error!\n") ;
-		exit() ;
-	}
+  *num = st.size;
+  buffer = (char*) malloc(sizeof(char) * (*num)) ;
+  if (buffer == NULL)
+  {
+    printf(2, "Memory error!\n") ;
+    exit() ;
+  }
+  long result = read(fd, buffer, *num) ;
+  if (result != *num)
+  {
+    printf(2, "File read error!\n") ;
+    exit() ;
+  }
   close(fd);
-	return buffer; 
+  return buffer; 
 }
